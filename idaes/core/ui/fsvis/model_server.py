@@ -68,7 +68,8 @@ class FlowsheetServer(http.server.HTTPServer):
         """Start the server, which will spawn a thread.
         """
         self._thr = threading.Thread(target=self._run)
-        self._thr.setDaemon(True)
+        # self._thr.setDaemon(True)
+        self._thr.setDaemon(False)
         self._thr.start()
 
     def add_setting(self, key: str, value):
