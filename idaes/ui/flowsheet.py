@@ -180,7 +180,8 @@ class FlowsheetSerializer:
         self.orphaned_ports = {}
         self.labels = {}
         self._stream_table_df = None
-        self._out_json = {"model": {}, "routing_config" : {}}
+        # self._out_json = {"model": {}, "routing_config" : {}}
+        self._out_json = {"model": {}}
         self._serialized_contents = defaultdict(dict)
         self._used_ports = set()
         self._known_endpoints = set()
@@ -623,31 +624,37 @@ class FlowsheetSerializer:
                 dest_port_id,
                 src.getname(),
                 dest.getname(),
+                src_unit_icon.routing_config,
+                dest_unit_icon.routing_config,
                 link_name,
-                self.labels[link_name],
+                self.labels[link_name]
             )
 
+            # Solution for JointJs Custom Routing Functions (To be Extended):
+            #
             # Add routing config if edge/link has source or destination elements
             # that has routing specifications. e.g. If destination element requires
             # the link to connect horizontally from the left side.
-            if src_unit_icon.routing_config and src_port in src_unit_icon.routing_config:
-                if link_name not in self._out_json["routing_config"]:
-                    self._out_json["routing_config"][link_name] = {
-                        'cell_index': link_index
-                    }
-                # The port group has to be specified in the routing config
-                self._out_json["routing_config"][link_name]["source"] = src_unit_icon.routing_config[src_port]
+            # if src_unit_icon.routing_config and src_port in src_unit_icon.routing_config:
+            #     if link_name not in self._out_json["routing_config"]:
+            #         self._out_json["routing_config"][link_name] = {
+            #             'cell_index': link_index
+            #         }
+            #     # The port group has to be specified in the routing config
+            #     self._out_json["routing_config"][link_name]["source"] = src_unit_icon.routing_config[src_port]
 
-            if dest_unit_icon.routing_config and dest_port in dest_unit_icon.routing_config:
-                if link_name not in self._out_json["routing_config"]:
-                    self._out_json["routing_config"][link_name] = {
-                        'cell_index': link_index
-                    }
-                # The port group has to be specified in the routing config
-                self._out_json["routing_config"][link_name]["destination"] = dest_unit_icon.routing_config[dest_port]
+            # if dest_unit_icon.routing_config and dest_port in dest_unit_icon.routing_config:
+            #     if link_name not in self._out_json["routing_config"]:
+            #         self._out_json["routing_config"][link_name] = {
+            #             'cell_index': link_index
+            #         }
+            #     # The port group has to be specified in the routing config
+            #     self._out_json["routing_config"][link_name]["destination"] = dest_unit_icon.routing_config[dest_port]
 
 
-        # Make sure that all registered Unit Models are created
+        # Make sure that the rest of registered Unit Models are created (If
+        # there are Models that aren't connected to the previously processed
+        # edges)
         for _, unit_attrs in self.unit_models.items():
             if unit_attrs['name'] in track_jointjs_elements:
                 # skip if unit is already added to the list of created cells
@@ -683,20 +690,31 @@ class FlowsheetSerializer:
         return len(self._out_json["cells"]) - 1 # return the index of the newly added cell
 
     def _create_link_jointjs_json(
-        self, source_port, dest_port, source_id, dest_id, name, label
+        self, src_port_id, dest_port_id, source_id, dest_id,
+        src_routing_config, dest_routing_config,
+        name, label
     ):
-        # Create the joint js for a link
-        # Set the padding to 10. Makayla saw it in a jointjs example
-        padding = 10
+        """Create the joint js for a link
+        """
+        # See if a Manhattan routing args were configured at either ends:
+        # Source and/or Destination models
+        router = {"name": "manhattan", "padding": 10}
+        if src_routing_config and src_routing_config[src_port_id]:
+            if src_routing_config[src_port_id]['routing_mode'] == "manhattan":
+                router.update(src_routing_config[src_port_id]['routing_mode']['args'])
+        if dest_routing_config and dest_routing_config[dest_port_id]:
+            if dest_routing_config[dest_port_id]['routing_mode'] == "manhattan":
+                router.update(dest_routing_config[dest_port_id]['routing_mode']['args'])
+
         # Set the initial offset position for the link labels. Makayla saw these numbers in a jointjs example
         position_distance = 0.66
         position_offset = -40
         z = 2
         entry = {
             "type": "standard.Link",
-            "source": {"id": source_id, "port": source_port},
-            "target": {"id": dest_id, "port": dest_port},
-            "router": {"name": "manhattan", "padding": padding},
+            "source": {"id": source_id, "port": src_port_id},
+            "target": {"id": dest_id, "port": dest_port_id},
+            "router": router,
             "connector": {"name": "jumpover", "attrs": {"line": {"stroke": "#5c9adb"}}},
             "id": name,
             "labels": [
