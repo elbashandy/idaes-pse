@@ -598,30 +598,33 @@ class FlowsheetSerializer:
 
             # The source_port and dest_port should be replaced by actual names in case there are multiple
             # inlets and outlets between the same two unit models
-            src_port = "out"
-            dest_port = "in"
-
-            # We create port ids for both ends: Source and Destination elements
+            # We also create port ids for both ends: Source and Destination elements
             # and pass it to the link jointjs element for accurate port representation
-            src_port_id = str(uuid.uuid4())
-            dest_port_id = str(uuid.uuid4())
+            src_port = {
+                "name": "out",
+                "id": str(uuid.uuid4())
+            }
+            dest_port = {
+                "name": "in",
+                "id": str(uuid.uuid4())
+            }
 
             # Add source port
             self._add_port_item(
                 track_jointjs_elements[src_unit_name],
-                src_port,
-                src_port_id
+                src_port['name'],
+                src_port['id']
             )
             # Add destination port
             self._add_port_item(
                 track_jointjs_elements[dest_unit_name],
-                dest_port,
-                dest_port_id
+                dest_port['name'],
+                dest_port['id']
             )
 
             link_index = self._create_link_jointjs_json(
-                src_port_id,
-                dest_port_id,
+                src_port,
+                dest_port,
                 src.getname(),
                 dest.getname(),
                 src_unit_icon.routing_config,
@@ -690,7 +693,7 @@ class FlowsheetSerializer:
         return len(self._out_json["cells"]) - 1 # return the index of the newly added cell
 
     def _create_link_jointjs_json(
-        self, src_port_id, dest_port_id, source_id, dest_id,
+        self, src_port, dest_port, src_id, dest_id,
         src_routing_config, dest_routing_config,
         name, label
     ):
@@ -698,13 +701,21 @@ class FlowsheetSerializer:
         """
         # See if a Manhattan routing args were configured at either ends:
         # Source and/or Destination models
-        router = {"name": "manhattan", "padding": 10}
-        if src_routing_config and src_routing_config[src_port_id]:
-            if src_routing_config[src_port_id]['routing_mode'] == "manhattan":
-                router.update(src_routing_config[src_port_id]['routing_mode']['args'])
-        if dest_routing_config and dest_routing_config[dest_port_id]:
-            if dest_routing_config[dest_port_id]['routing_mode'] == "manhattan":
-                router.update(dest_routing_config[dest_port_id]['routing_mode']['args'])
+        router = {
+            "name": "manhattan",
+            "args": {
+                "padding": 10
+            }
+        }
+        if src_routing_config and src_port['name'] in src_routing_config:
+            if src_routing_config[src_port['name']]['routing_mode'] == "manhattan":
+                router["args"].update(src_routing_config[src_port['name']]['args'])
+        if dest_routing_config and dest_port['name'] in dest_routing_config:
+            if dest_routing_config[dest_port['name']]['routing_mode'] == "manhattan":
+                router["args"].update(dest_routing_config[dest_port['name']]['args'])
+                print("------------- Updating Router!!!!")
+                print("Src:", src_id, "- Dest:", dest_id)
+                print("link_name:", name, "- router:", router)
 
         # Set the initial offset position for the link labels. Makayla saw these numbers in a jointjs example
         position_distance = 0.66
@@ -712,8 +723,8 @@ class FlowsheetSerializer:
         z = 2
         entry = {
             "type": "standard.Link",
-            "source": {"id": source_id, "port": src_port_id},
-            "target": {"id": dest_id, "port": dest_port_id},
+            "source": {"id": src_id, "port": src_port['id']},
+            "target": {"id": dest_id, "port": dest_port['id']},
             "router": router,
             "connector": {"name": "jumpover", "attrs": {"line": {"stroke": "#5c9adb"}}},
             "id": name,

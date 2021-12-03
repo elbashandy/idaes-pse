@@ -9,6 +9,8 @@ export class App {
         const url = `/fs?id=${ flowsheetId }`;
         $.ajax({url: url, datatype: 'json'})
             .done((model) => {
+                console.log("joint.version:", joint.version);
+                console.log("model:", model);
                 this.renderModel(model);
                 this.stream_table = new StreamTable(this, model);
                 this.toolbar = new Toolbar(this, this.paper, this.stream_table);

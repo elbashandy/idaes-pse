@@ -370,12 +370,21 @@ class UnitModelIcon:
                     "routing_mode": "manhattan",
                     "args": {
                         "endDirections": ['left'],
-                        "padding": {
-                            "left": 30
-                        }
+                        "padding": 30
                     }
                 }
             }
+            # "routing_config": {
+            #     "in": {
+            #         "routing_mode": "manhattan",
+            #         "args": {
+            #             "endDirections": ['horizontal'],
+            #             "padding": {
+            #                 "horizontal": 100
+            #             }
+            #         }
+            #     }
+            # }
             # "routing_config": {
             #     "in": {
             #         "gap": {
