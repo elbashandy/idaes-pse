@@ -11,6 +11,11 @@ export class Paper {
         this._paper = new joint.dia.Paper({
             model: this._graph,
             cellViewNamespace: { standard },
+            defaultConnectionPoint: {
+                name: 'boundary'
+            },
+            async: true,
+            sorting: joint.dia.Paper.sorting.APPROX,
             width: width,
             height: height,
             gridSize: gridSize,

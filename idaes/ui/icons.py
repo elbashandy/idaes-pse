@@ -367,12 +367,32 @@ class UnitModelIcon:
             },
             "routing_config": {
                 "in": {
-                    "gap": {
-                        "direction": "left",
-                        "distance": 30
+                    "routing_mode": "manhattan",
+                    "args": {
+                        "endDirections": ['left'],
+                        "padding": 30
                     }
                 }
             }
+            # "routing_config": {
+            #     "in": {
+            #         "routing_mode": "manhattan",
+            #         "args": {
+            #             "endDirections": ['horizontal'],
+            #             "padding": {
+            #                 "horizontal": 100
+            #             }
+            #         }
+            #     }
+            # }
+            # "routing_config": {
+            #     "in": {
+            #         "gap": {
+            #             "direction": "left",
+            #             "distance": 30
+            #         }
+            #     }
+            # }
         },
         "plug_flow_reactor": {
             "image": "reactor_pfr.svg",
