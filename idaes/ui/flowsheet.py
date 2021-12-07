@@ -180,7 +180,8 @@ class FlowsheetSerializer:
         self.orphaned_ports = {}
         self.labels = {}
         self._stream_table_df = None
-        self._out_json = {"model": {}, "routing_config" : {}}
+        # self._out_json = {"model": {}, "routing_config" : {}}
+        self._out_json = {"model": {}}
         self._serialized_contents = defaultdict(dict)
         self._used_ports = set()
         self._known_endpoints = set()
@@ -626,31 +627,37 @@ class FlowsheetSerializer:
                 dest_port,
                 src.getname(),
                 dest.getname(),
+                src_unit_icon.routing_config,
+                dest_unit_icon.routing_config,
                 link_name,
-                self.labels[link_name],
+                self.labels[link_name]
             )
 
+            # Solution for JointJs Custom Routing Functions (To be Extended):
+            #
             # Add routing config if edge/link has source or destination elements
             # that has routing specifications. e.g. If destination element requires
             # the link to connect horizontally from the left side.
-            if src_unit_icon.routing_config and src_port in src_unit_icon.routing_config:
-                if link_name not in self._out_json["routing_config"]:
-                    self._out_json["routing_config"][link_name] = {
-                        'cell_index': link_index
-                    }
-                # The port group has to be specified in the routing config
-                self._out_json["routing_config"][link_name]["source"] = src_unit_icon.routing_config[src_port]
+            # if src_unit_icon.routing_config and src_port in src_unit_icon.routing_config:
+            #     if link_name not in self._out_json["routing_config"]:
+            #         self._out_json["routing_config"][link_name] = {
+            #             'cell_index': link_index
+            #         }
+            #     # The port group has to be specified in the routing config
+            #     self._out_json["routing_config"][link_name]["source"] = src_unit_icon.routing_config[src_port]
 
-            if dest_unit_icon.routing_config and dest_port in dest_unit_icon.routing_config:
-                if link_name not in self._out_json["routing_config"]:
-                    self._out_json["routing_config"][link_name] = {
-                        'cell_index': link_index
-                    }
-                # The port group has to be specified in the routing config
-                self._out_json["routing_config"][link_name]["destination"] = dest_unit_icon.routing_config[dest_port]
+            # if dest_unit_icon.routing_config and dest_port in dest_unit_icon.routing_config:
+            #     if link_name not in self._out_json["routing_config"]:
+            #         self._out_json["routing_config"][link_name] = {
+            #             'cell_index': link_index
+            #         }
+            #     # The port group has to be specified in the routing config
+            #     self._out_json["routing_config"][link_name]["destination"] = dest_unit_icon.routing_config[dest_port]
 
 
-        # Make sure that all registered Unit Models are created
+        # Make sure that the rest of registered Unit Models are created (If
+        # there are Models that aren't connected to the previously processed
+        # edges)
         for _, unit_attrs in self.unit_models.items():
             if unit_attrs['name'] in track_jointjs_elements:
                 # skip if unit is already added to the list of created cells
