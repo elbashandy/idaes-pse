@@ -8,13 +8,13 @@ from pyomo.environ import (Constraint,
                            value)
 from pyomo.network import Arc, SequentialDecomposition
 from idaes.core import FlowsheetBlock
-from idaes.generic_models.unit_models import (PressureChanger,
+from idaes.models.unit_models import (PressureChanger,
                                         Mixer,
                                         Separator as Splitter,
                                         Heater,
                                         StoichiometricReactor)
-from idaes.generic_models.unit_models import Flash
-from idaes.generic_models.unit_models.pressure_changer import ThermodynamicAssumption
+from idaes.models.unit_models import Flash
+from idaes.models.unit_models.pressure_changer import ThermodynamicAssumption
 from idaes.core.util.model_statistics import degrees_of_freedom
 from idaes.core.util.tables import arcs_to_stream_dict
 
@@ -202,6 +202,6 @@ print("d:", d)
 #print('dir(d):', dir(d))
 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-m.fs.visualize("test", save=True)
+m.fs.visualize("test", save=True, loop_forever=True)
 
 ['CONFIG', 'Skip', '_Block_reserved_words', '_ComponentDataClass', '_DEFAULT_INDEX_CHECKING_ENABLED', '_PPRINT_INDENT', '__class__', '__contains__', '__deepcopy__', '__delattr__', '__delitem__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattr__', '__getattribute__', '__getitem__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__iter__', '__le__', '__len__', '__lt__', '__module__', '__ne__', '__new__', '__pickle_slots__', '__process_block__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setitem__', '__setstate__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', '__weakref__', '_active', '_add_implicit_sets', '_bfs_iterator', '_block_data_config_default', '_block_data_config_initialize', '_compact_decl_storage', '_component', '_component_data_iter', '_component_typemap', '_constructed', '_ctype', '_ctypes', '_data', '_decl', '_decl_order', '_dense', '_flag_vars_as_stale', '_get_config_args', '_get_default_prop_pack', '_get_indexing_sets', '_get_performance_contents', '_get_property_package', '_get_reaction_package', '_get_stream_table_contents', '_getitem_when_not_present', '_idx_map', '_implicit_subsets', '_index', '_name', '_not_constructed_error', '_orig_module', '_orig_name', '_parent', '_pb_configured', '_postfix_dfs_iterator', '_pprint', '_pprint_base_impl', '_pprint_blockdata_components', '_pprint_callback', '_prefix_dfs_iterator', '_processUnhashableIndex', '_rule', '_setitem_impl', '_setitem_when_not_present', '_setup_dynamics', '_suppress_ctypes', '_time_units', '_tree_iterator', '_validate_index', 'activate', 'active', 'active_blocks', 'active_component_data', 'active_components', 'add_component', 'all_blocks', 'all_component_data', 'all_components', 'base_class_module', 'base_class_name', 'block_data_objects', 'build', 'calculate_scaling_factors', 'clear', 'clear_suffix_value', 'clone', 'cname', 'collect_ctypes', 'component', 'component_data_iterindex', 'component_data_objects', 'component_map', 'component_objects', 'config', 'construct', 'contains_component', 'ctype', 'deactivate', 'del_component', 'dim', 'display', 'doc', 'find_component', 'fix_all_vars', 'fix_initial_conditions', 'flowsheet', 'get_costing', 'get_suffix_value', 'getname', 'id_index_map', 'index', 'index_set', 'is_component_type', 'is_constructed', 'is_expression_type', 'is_flowsheet', 'is_indexed', 'is_logical_type', 'is_named_expression_type', 'is_numeric_type', 'is_parameter_type', 'is_reference', 'is_variable_type', 'items', 'iteritems', 'iterkeys', 'itervalues', 'keys', 'local_name', 'model', 'model_check', 'name', 'parent_block', 'parent_component', 'pprint', 'reclassify_component_type', 'reconstruct', 'report', 'root_block', 'serialize_contents', 'set_suffix_value', 'set_value', 'stream_table', 'time', 'time_units', 'to_dense_data', 'to_string', 'transfer_attributes_from', 'type', 'unfix_all_vars', 'unfix_initial_conditions', 'valid_model_component', 'valid_problem_types', 'values', 'visualize', 'write']
